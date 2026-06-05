@@ -29,8 +29,11 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  return null;
-};
+  return db.removeColumn('buildings', 'cauvery_water_account_number')
+    .then(() => {
+      return db.removeColumn('buildings', 'cauvery_water_bill_image')
+    })
+}
 
 exports._meta = {
   "version": 1
