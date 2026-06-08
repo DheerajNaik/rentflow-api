@@ -9,5 +9,9 @@ const createBuilding = async (data) => {
   )
   return result
 }
+const getAllBuildings = async()=>{
+        const [rows]=   await pool.execute(`SELECT * FROM buildings WHERE is_active = 1`);
+        return rows;
+}
 
-module.exports = { createBuilding }
+module.exports = { createBuilding,getAllBuildings}
