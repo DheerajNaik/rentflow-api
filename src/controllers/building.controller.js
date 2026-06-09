@@ -24,4 +24,19 @@ const getAllBuildings = async(req,res)=>{
          res.status(500).json({ success: false, message: error.message })
      }
 }
-module.exports = { createBuilding, getAllBuildings }
+
+const getBuildingById = async (req,res)=>{
+    try{
+         const id = req.params.id;
+         
+         const building = await buildingModel.getBuildingById(id);
+         if(!building){
+            return res.status(404).json({success: false, message : "No such data found"})
+         }
+         res.status(200).json({success: true, data : building })
+
+    }catch(error){
+         res.status(500).json({success: false, message : error.message})
+    }
+}
+module.exports = { createBuilding, getAllBuildings, getBuildingById }
