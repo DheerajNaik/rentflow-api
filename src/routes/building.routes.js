@@ -5,6 +5,7 @@ const {validateBuilding} = require('../middleware/buildingValidator');
 
 router.post('/', validateBuilding, buildingController.createBuilding)
 router.get('/',buildingController.getAllBuildings);
+router.get('/:id',buildingController.getBuildingById);
 
 
 module.exports = router
