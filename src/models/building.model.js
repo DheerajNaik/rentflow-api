@@ -20,4 +20,17 @@ const getBuildingById = async(id)=>{
        const [row] = await pool.execute( `SELECT * FROM buildings WHERE id = ? AND is_active = 1`, [id]);
        return row[0];
 }
-module.exports = { createBuilding,getAllBuildings,getBuildingById}
+const updateBuildingById = async(id,updates)=>{
+       const fields = Object.keys(updates)
+       const values = Object.values(updates)
+       const setClause = fields.map(field => `${field} = ?`).join(', ')
+       values.push(id) // add id at the end for WHERE clause
+
+       const [result] = await pool.execute(
+        `UPDATE buildings SET ${setClause}, updated_at = NOW() WHERE id = ? AND is_active = 1`,
+        values
+        )
+
+  return result
+}
+module.exports = { createBuilding,getAllBuildings,getBuildingById, updateBuildingById}

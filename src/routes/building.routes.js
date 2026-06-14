@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const buildingController = require('../controllers/building.controller')
-const {validateBuilding} = require('../middleware/buildingValidator');
+const {validateBuilding, validateBuildingUpdate} = require('../middleware/buildingValidator');
 
 router.post('/', validateBuilding, buildingController.createBuilding)
 router.get('/',buildingController.getAllBuildings);
 router.get('/:id',buildingController.getBuildingById);
-
+router.put('/:id',validateBuildingUpdate, buildingController.updateBuildingById);
 
 module.exports = router
