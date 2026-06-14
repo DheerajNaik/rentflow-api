@@ -27,8 +27,7 @@ const getAllBuildings = async(req,res)=>{
 
 const getBuildingById = async (req,res)=>{
     try{
-         const id = req.params.id;
-         
+         const id = req.params.id;     
          const building = await buildingModel.getBuildingById(id);
          if(!building){
             return res.status(404).json({success: false, message : "No such data found"})
@@ -39,4 +38,23 @@ const getBuildingById = async (req,res)=>{
          res.status(500).json({success: false, message : error.message})
     }
 }
-module.exports = { createBuilding, getAllBuildings, getBuildingById }
+
+const updateBuildingById = async (req, res)=>{
+     try {
+        const { name, address, city,yearly_tax, cauvery_water_account_number,cauvery_water_bill_image }  = req.body;
+        const allowedFields = { name, address, city,yearly_tax, cauvery_water_account_number,cauvery_water_bill_image }
+        const updates = Object.fromEntries(Object.entries(allowedFields).filter(([_, value]) => value !== undefined));
+        const id = req.params.id;
+        const result = await buildingModel.updateBuildingById(id,updates);
+        console.log(result)
+        if(result.affectedRows===0){
+           return res.status(404).json({success:false, message: "No such data found"});
+        }
+         res.status(200).json({success:true , data : result})
+     }
+     catch (error){
+        res.status(500).json({success: false, message : error.message})
+     }
+}
+
+module.exports = { createBuilding, getAllBuildings, getBuildingById, updateBuildingById }
