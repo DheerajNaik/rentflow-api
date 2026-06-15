@@ -1,5 +1,6 @@
 const express = require('express')
 const buildingRoutes = require('./src/routes/building.routes')
+const houseRoutes = require('./src/routes/house.routes')
 const app = express()
 
 
@@ -10,5 +11,6 @@ app.get('/health', (req, res) => {
 })
 
 app.use('/buildings', buildingRoutes);
+app.use('/buildings/:buildingId/houses' , houseRoutes);
 
 module.exports = app
