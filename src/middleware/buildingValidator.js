@@ -35,7 +35,6 @@ const validateBuildingUpdate =(req, res, next)=>{
         return res.status(400).json({success:false, messages})
     }
     next()
-
 }
 
 module.exports = {validateBuilding,validateBuildingUpdate}

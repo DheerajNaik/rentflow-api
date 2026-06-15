@@ -1,5 +1,6 @@
 const pool = require('../config/db')
-const { v4: uuidv4 } = require('uuid')
+const { v4: uuidv4 } = require('uuid');
+
 
 
 const createBuilding = async (data) => {
@@ -33,4 +34,30 @@ const updateBuildingById = async(id,updates)=>{
 
   return result
 }
-module.exports = { createBuilding,getAllBuildings,getBuildingById, updateBuildingById}
+
+const deleteBuildingById = async(id)=>{
+                  const [[item]] = await pool.execute(`SELECT is_active FROM buildings WHERE id = ?`,[id]);
+                  if(!item){
+                      return null
+                  }else if (item.is_active){
+                         const [row] = await pool.execute(`UPDATE buildings SET is_active = 0, updated_at = NOW() WHERE id = ?`,[id]);
+                       return [row]
+                  }else{
+                    return "Already deleted"
+                  }
+                               
+}
+
+const restoreBuildingById = async (id) => {
+            const [[item]] = await pool.execute(`SELECT is_active FROM buildings WHERE id = ?`,[id]);
+                  if(!item){
+                      return null
+                  }else if (item.is_active){
+                         return "Already restored"
+                  }else{
+                    const [row] = await pool.execute(`UPDATE buildings SET is_active = 1, updated_at = NOW() WHERE id = ?`,[id]);
+                       return [row]
+                    
+                  }
+}
+module.exports = { createBuilding,getAllBuildings,getBuildingById, updateBuildingById, deleteBuildingById, restoreBuildingById}

@@ -46,7 +46,7 @@ const updateBuildingById = async (req, res)=>{
         const updates = Object.fromEntries(Object.entries(allowedFields).filter(([_, value]) => value !== undefined));
         const id = req.params.id;
         const result = await buildingModel.updateBuildingById(id,updates);
-        console.log(result)
+        
         if(result.affectedRows===0){
            return res.status(404).json({success:false, message: "No such data found"});
         }
@@ -57,4 +57,39 @@ const updateBuildingById = async (req, res)=>{
      }
 }
 
-module.exports = { createBuilding, getAllBuildings, getBuildingById, updateBuildingById }
+const deleteBuildingById = async (req, res) => {
+        try {
+        const id = req.params.id;
+        const result = await buildingModel.deleteBuildingById(id)
+        if(result === null ){
+            return res.status(404).json({success: false, message : "Data not found"})
+        }
+        if( result === "Already deleted" ){
+           return res.status(404).json({success: false, message : "invalid request: This is already deactivated"})
+        }
+        res.status(200).json({success:true, message : result})
+        } 
+        catch (error) {
+        res.status(500).json({ success: false, message: error.message })
+        }
+}
+
+const restoreBuildingById = async (req, res) => {
+       try {
+          const id = req.params.id;
+        const result = await buildingModel.restoreBuildingById(id)
+        if(result === null ){
+            return res.status(404).json({success: false, message : "Data not found"})
+        }
+        if( result === "Already restored" ){
+           return res.status(400).json({success: false, message : "invalid request: This is already activated"})
+        }
+        res.status(200).json({success:true, message : result})
+        } 
+       
+       catch(error){
+           res.status(500).json({success : false, message : error.message })
+       }
+}
+
+module.exports = { createBuilding, getAllBuildings, getBuildingById, updateBuildingById, deleteBuildingById , restoreBuildingById}
