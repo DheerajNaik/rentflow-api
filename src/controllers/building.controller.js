@@ -42,9 +42,9 @@ const updateBuildingById = async (req, res)=>{
      try {
         const { name, address, city,yearly_tax, cauvery_water_account_number,cauvery_water_bill_image }  = req.body;
         const allowedFields = { name, address, city,yearly_tax, cauvery_water_account_number,cauvery_water_bill_image }
-        const updates = Object.fromEntries(Object.entries(allowedFields).filter(([_, value]) => value !== undefined));
+        const updatedFields = Object.fromEntries(Object.entries(allowedFields).filter(([_, value]) => value !== undefined));
         const id = req.params.id;
-        const result = await buildingModel.updateBuildingById(id,updates);
+        const result = await buildingModel.updateBuildingById(id, updatedFields);
         
         if(result.affectedRows===0){
            return res.status(404).json({success:false, message: "No such data found"});
