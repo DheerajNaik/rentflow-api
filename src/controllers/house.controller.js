@@ -95,7 +95,7 @@ const restoreHouseById = async(req, res)=>{
         
         const result =   await houseModel.restoreHouseById(building_id ,id)
         
-        if(result === "Invalid data"){
+        if(result === "Invalid Data"){
           return res.status(404).json({success:false , message: result})
         }
         if(result === "Already restored"){
