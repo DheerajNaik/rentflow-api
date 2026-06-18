@@ -22,5 +22,55 @@ const getAllHousesByBuilding = async (id)=> {
        return list;
 }
 
+const getHouseById = async(building_id, id) =>{
+          const [house] =  await pool.execute (`SELECT * FROM houses WHERE building_id= ? AND id =? AND is_active = 1`,[building_id,id]);
+          return house[0]
+}
 
-module.exports = {createHouse,getAllHousesByBuilding}
+const updateHouseById = async(building_id, id , updatedValues) =>{
+    // check if duplicate house name is entered which is already present in the same building but allows editing the current house name.
+    const updatedHouseName = updatedValues.house_name;
+   
+    if (updatedHouseName) {
+        const [[item]] = await pool.execute(`SELECT house_name FROM houses WHERE building_id =? AND id != ? AND house_name = ? AND is_active =1`, [building_id, id, updatedHouseName])
+        if (item) return "House Name already exists"
+    }
+
+    const fields = Object.keys(updatedValues)
+    const values = Object.values(updatedValues)
+    const setClause = fields.map(field => `${field} = ?`).join(', ')
+    values.push(id, building_id) 
+    
+    const [result] = await pool.execute(
+        `UPDATE houses SET ${setClause}, updated_at = NOW() WHERE id = ? AND building_id = ? AND is_active = 1`, values)
+    return result;
+
+}
+
+const deleteHouseById = async(building_id , id)=>{
+
+      const [[result]] = await pool.execute(`SELECT is_active FROM houses WHERE id = ? AND building_id = ?`, [id, building_id])
+      if(!result){
+         return "Invalid Data";
+      }
+      if(!result.is_active){
+        return "Already deleted"
+      }
+       const [item] =    await pool.execute(`UPDATE houses SET is_active = 0, updated_at = NOW() WHERE building_id = ? AND id = ?`, [building_id,id])
+         return item;
+    }
+const restoreHouseById = async(building_id , id)=>{
+
+      const [[result]] = await pool.execute(`SELECT is_active FROM houses WHERE id = ? AND building_id = ?`, [id, building_id])
+
+      if(!result){
+         return "Invalid Data";
+      }
+      if(result.is_active){
+        return "Already restored"
+      }
+       const [item] =    await pool.execute(`UPDATE houses SET is_active = 1, updated_at = NOW() WHERE building_id = ? AND id = ?`, [building_id,id])
+         return item;
+    }
+
+module.exports = {createHouse,getAllHousesByBuilding, getHouseById, updateHouseById, deleteHouseById, restoreHouseById }
