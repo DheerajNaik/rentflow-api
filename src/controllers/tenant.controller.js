@@ -36,6 +36,26 @@ const getTenantById = async(req,res)=>{
       }
 
 }
-module.exports = {createTenant,getAllTenants,getTenantById}
+
+const updateTenantById = async(req,res)=>{
+     try {
+       const { name, phone_number,aadhar_number,emergency_contact_name,emergency_contact_number,notes }  = req.body;
+        const allowedFields = { name, phone_number,aadhar_number,emergency_contact_name,emergency_contact_number,notes }
+        const updatedFields = Object.fromEntries(Object.entries(allowedFields).filter(([_, value]) => value !== undefined));
+        const id = req.params.id;
+        const updateValues = req.body;
+        const result = await tenantModel.updateTenantById(id,updateValues)
+  
+        if(result.affectedRows===0){
+           return res.status(404).json({success:false, message: "No such data found"});
+        }
+         res.status(200).json({success:true , data : result})
+        }
+        catch (error) {
+         res.status(500).json({success: false, message : error.message})
+
+        }
+}
+module.exports = {createTenant,getAllTenants,getTenantById, updateTenantById}
 
 
