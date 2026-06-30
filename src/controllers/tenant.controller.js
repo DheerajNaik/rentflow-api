@@ -56,6 +56,40 @@ const updateTenantById = async(req,res)=>{
 
         }
 }
-module.exports = {createTenant,getAllTenants,getTenantById, updateTenantById}
+
+const deleteTenantById = async (req, res)=>{
+   try {
+      const id = req.params.id;
+      const result = await tenantModel.deleteTenantById(id);
+      if (result === null) {
+         return res.status(404).json({ success: false, message: "Data not found" })
+      }
+      if (result === "Already deleted") {
+         return res.status(404).json({ success: false, message: "invalid request: This is already deactivated" })
+      }
+      res.status(200).json({ success: true, data: result })
+   }
+   catch (error) {
+      res.status(500).json({ success: false, message: error.message })
+   }
+}
+const restoreTenantById = async (req, res)=>{
+   try {
+      const id = req.params.id;
+      const result = await tenantModel.restoreTenantById(id);
+      if (result === null) {
+         return res.status(404).json({ success: false, message: "Data not found" })
+      }
+      if (result === "Already restored") {
+         return res.status(404).json({ success: false, message: "invalid request: This is already activated" })
+      }
+      res.status(200).json({ success: true, data: result })
+   }
+   catch (error) {
+      res.status(500).json({ success: false, message: error.message })
+   }
+}
+
+module.exports = {createTenant,getAllTenants,getTenantById, updateTenantById, deleteTenantById, restoreTenantById}
 
 
