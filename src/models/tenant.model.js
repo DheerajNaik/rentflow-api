@@ -36,4 +36,32 @@ const updateTenantById = async (id, updateValues)=>{
        console.log(result)
        return result;
 }
-module.exports = {createTenant,getAllTenants,getTenantById,updateTenantById}
+
+const deleteTenantById = async (id)=>{
+     const [[item]] = await pool.execute(`SELECT is_active FROM tenants WHERE id = ?`, [id]);
+          if (!item) {
+            return null
+          } 
+           if (item.is_active) {
+            const [row] = await pool.execute(`UPDATE tenants SET is_active = 0, updated_at = NOW() WHERE id = ?`, [id]);
+            return [row]
+          } else {
+            return "Already deleted"
+          }
+     
+}
+const restoreTenantById = async (id)=>{
+     const [[item]] = await pool.execute(`SELECT is_active FROM tenants WHERE id = ?`, [id]);
+          if (!item) {
+            return null
+          } 
+           if (item.is_active) {
+            return "Already restored"
+            
+          } else {
+               const [row] = await pool.execute(`UPDATE tenants SET is_active = 1, updated_at = NOW() WHERE id = ?`, [id]);
+            return [row]
+          }
+     
+}
+module.exports = {createTenant,getAllTenants,getTenantById,updateTenantById, deleteTenantById, restoreTenantById}
