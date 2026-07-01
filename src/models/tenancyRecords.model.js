@@ -57,4 +57,25 @@ const updateTenancyRecordById = async (id,data)=>{
 
 }
 
-module.exports = {createTenancyRecord, getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById,updateTenancyRecordById}
+const updateMoveoutDate = async(id,date)=>{
+       
+       const [[record]] = await pool.execute(`SELECT move_in_date,move_out_date FROM tenancy_records WHERE id = ?`,[id]);
+     // console.log(record)
+     // console.log(date)
+       if(!record){
+        return "Invalid request"
+       }
+       if(record.move_out_date){
+        return "Tenant has already moved out"
+       }
+       if (new Date(date) < new Date(record.move_in_date)) {
+        return "Invalid_date"
+       }
+       const [result] = await pool.execute(`UPDATE tenancy_records SET move_out_date = ?,updated_at = NOW() WHERE id = ?`, [date,id]);
+       return result;
+      
+       //if move out date is less than move in date
+       //if move out date is already there
+}
+
+module.exports = {createTenancyRecord, getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById,updateTenancyRecordById,updateMoveoutDate}

@@ -70,6 +70,28 @@ const updateTenancyRecordById = async(req, res)=>{
     }
 }
 const updateMoveoutDate = async(req, res)=>{
+    try{
+
+    
+    const id = req.params.id;
+    console.log(req.body,"this is req")
+    const {move_out_date} = req.body;
+  //  console.log(date)
+    const result =  await tenancyRecordsModel.updateMoveoutDate(id,move_out_date);
+    if (result === "Invalid request") {
+        return res.status(404).json({ success: false, message: result })
+    }
+    if (result === "Tenant has already moved out") {
+        return res.status(404).json({ success: false, message: result })
+    }
+    if (result === "Invalid_date") {
+        return res.status(404).json({ success: false, message: result })
+    }
+    res.status(200).json({success: true, data : result})
+    }
+    catch(error){
+        res.status(500).json({success: false, message : error.message})
+    }
 
 }
 module.exports = {createTenancyRecords,getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById, updateTenancyRecordById,updateMoveoutDate} 
