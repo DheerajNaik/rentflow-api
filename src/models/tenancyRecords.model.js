@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const createTenancyRecord = async (record) => {
     const id = uuidv4();
-      const { tenant_id, house_id, move_in_date, number_of_occupants, minimum_stay_months, agreement_done,
+    const { tenant_id, house_id, move_in_date, number_of_occupants, minimum_stay_months, agreement_done,
         agreement_expiry_date, painting_charges, notes, agreement_file_url } = record;
      const dataWithId = {id,...record}
  
@@ -45,5 +45,16 @@ const getTenancyRecordById = async (id) =>{
        return result;
 
 }
+const updateTenancyRecordById = async (id,data)=>{
+     //const {move_in_date,move_out_date,  number_of_occupants , minimum_stay_months, agreement_done , agreement_expiry_date, painting_charges, notes, agreement_file_url}= data;
+       const items = Object.keys(data);
+       const setClause = items.map(item=> `${item} = ?`).join(', ');
+       const values = Object.values(data);
+       values.push(id);
+       const [result] = await pool.execute(`UPDATE tenancy_records SET ${setClause}, updated_at = NOW() WHERE id = ?`,values)
+       return result
+     
 
-module.exports = {createTenancyRecord, getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById}
+}
+
+module.exports = {createTenancyRecord, getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById,updateTenancyRecordById}
