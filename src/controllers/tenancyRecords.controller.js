@@ -15,4 +15,41 @@ const createTenancyRecords = async(req, res)=>{
     }
 }
 
-module.exports = {createTenancyRecords} 
+const getAllTenancyRecords = async (req, res)=>{
+    try{
+       const result = await tenancyRecordsModel.getAllTenancyRecords();
+      
+       res.status(200).json({success: true, data : result}) 
+    }
+    catch(error){
+       res.status(500).json({success: false , message : error.message})
+    }
+}
+
+const getAllActiveTenancyRecords = async(req, res)=>{
+    try {
+      const result = await tenancyRecordsModel.getAllActiveTenancyRecords();
+      res.status(200).json({success: true, data : result})
+    }
+    catch(error){
+       res.status(500).json({success: false , message : error.message})
+    }
+}
+
+const getTenancyRecordById =async (req, res)=>{
+
+    try {
+        const id = req.params.id;
+        const result =  await tenancyRecordsModel.getTenancyRecordById(id);
+        if(result === "Invalid Request"){
+       return  res.status(404).json({success: false, message : result})
+            
+        }
+        res.status(200).json({success: true, data : result})
+        
+    }
+    catch(error){
+       res.status(500).json({success: false , message : error.message})
+    }
+}
+module.exports = {createTenancyRecords,getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById} 

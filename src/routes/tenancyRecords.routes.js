@@ -4,6 +4,9 @@ const tenancyRecordsController = require('../controllers/tenancyRecords.controll
 const {validateTenancyRecord}= require('../middleware/tenancyRecordValidator')
 
 
-router.post('/',validateTenancyRecord,tenancyRecordsController.createTenancyRecords)
+router.post('/',validateTenancyRecord,tenancyRecordsController.createTenancyRecords);
+router.get('/', tenancyRecordsController.getAllTenancyRecords);
+router.get('/active', tenancyRecordsController.getAllActiveTenancyRecords);
+router.get('/:id', tenancyRecordsController.getTenancyRecordById)
 
 module.exports = router;
