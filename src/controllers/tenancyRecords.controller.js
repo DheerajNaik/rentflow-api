@@ -42,7 +42,7 @@ const getTenancyRecordById =async (req, res)=>{
         const id = req.params.id;
         const result =  await tenancyRecordsModel.getTenancyRecordById(id);
         if(result === "Invalid Request"){
-       return  res.status(404).json({success: false, message : result})
+         return  res.status(404).json({success: false, message : result})
             
         }
         res.status(200).json({success: true, data : result})
@@ -52,4 +52,24 @@ const getTenancyRecordById =async (req, res)=>{
        res.status(500).json({success: false , message : error.message})
     }
 }
-module.exports = {createTenancyRecords,getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById} 
+
+const updateTenancyRecordById = async(req, res)=>{
+    try{
+    const id = req.params.id;
+    const {move_in_date,  number_of_occupants , minimum_stay_months, agreement_done , agreement_expiry_date, painting_charges, notes, agreement_file_url}= req.body;
+    const items = {move_in_date,  number_of_occupants , minimum_stay_months, agreement_done , agreement_expiry_date, painting_charges, notes, agreement_file_url};
+    const realData =  Object.fromEntries(Object.entries(items).filter(([key,value])=>value !==undefined));
+    const result = await tenancyRecordsModel.updateTenancyRecordById(id,realData);
+        if (result.affectedRows === 0) {
+         return res.status(404).json({ success: false, message: 'Record not found' })
+           }
+        res.status(200).json({success: true, data : result})
+    }
+    catch(error){
+       res.status(500).json({success: false , message : error.message})
+    }
+}
+const updateMoveoutDate = async(req, res)=>{
+
+}
+module.exports = {createTenancyRecords,getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById, updateTenancyRecordById,updateMoveoutDate} 

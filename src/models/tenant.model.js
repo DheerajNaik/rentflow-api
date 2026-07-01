@@ -31,9 +31,7 @@ const updateTenantById = async (id, updateValues)=>{
        const setClause = items.map(item=> `${item} = ?`).join(', ');
        const values = Object.values(updateValues);
        values.push(id);
-       console.log(values)
        const [result] = await pool.execute(`UPDATE tenants SET ${setClause}, updated_at = NOW() WHERE is_active = 1 AND id = ?`,values)
-       console.log(result)
        return result;
 }
 
