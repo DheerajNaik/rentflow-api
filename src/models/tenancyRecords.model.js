@@ -37,6 +37,7 @@ const getAllActiveTenancyRecords = async () => {
   console.log(results)
   return results;
 }
+
 const getTenancyRecordById = async (id) => {
   const [[result]] = await pool.execute((`SELECT * FROM tenancy_records WHERE id = ? `), [id]);
   if (!result) {
@@ -45,16 +46,16 @@ const getTenancyRecordById = async (id) => {
   return result;
 
 }
+
 const updateTenancyRecordById = async (id, data) => {
-  //const {move_in_date,move_out_date,  number_of_occupants , minimum_stay_months, agreement_done , agreement_expiry_date, painting_charges, notes, agreement_file_url}= data;
+
   const items = Object.keys(data);
   const setClause = items.map(item => `${item} = ?`).join(', ');
   const values = Object.values(data);
   values.push(id);
   const [result] = await pool.execute(`UPDATE tenancy_records SET ${setClause}, updated_at = NOW() WHERE id = ?`, values)
   return result
-
-
+  
 }
 
 const updateMoveoutDate = async (id, date) => {
@@ -72,8 +73,6 @@ const updateMoveoutDate = async (id, date) => {
   }
   const [result] = await pool.execute(`UPDATE tenancy_records SET move_out_date = ?,updated_at = NOW() WHERE id = ?`, [date, id]);
   return result;
-
-
 }
 
 module.exports = { createTenancyRecord, getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById, updateTenancyRecordById, updateMoveoutDate }

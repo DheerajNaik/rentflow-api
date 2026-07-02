@@ -13,7 +13,6 @@ const tenancyRecordSchema = Joi.object({
   notes: Joi.string().optional().allow('', null)
 })
 const updateTenancyRecordSchema = Joi.object({
-  
   move_in_date: Joi.date().optional(),
   number_of_occupants: Joi.number().min(0).max(10).optional().allow('', null),
   minimum_stay_months: Joi.number().min(0).optional(),
