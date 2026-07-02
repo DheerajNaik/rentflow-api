@@ -73,7 +73,6 @@ const updateMoveoutDate = async (req, res) => {
     try {
         const id = req.params.id;
         const { move_out_date } = req.body;
-
         const result = await tenancyRecordsModel.updateMoveoutDate(id, move_out_date);
         if (result === "Invalid request") {
             return res.status(404).json({ success: false, message: result })

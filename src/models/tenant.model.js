@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const createTenant = async(data)=>{
      const id = uuidv4();
      const dataWithId = {id,...data}
-     const entries = Object.entries(dataWithId).filter(([_, value]) => value !== undefined);
+     const entries = Object.entries(dataWithId);
      const columns = entries.map(([key]) => key).join(', ');
      const placeholders = entries.map(() => '?').join(', ');
      const values = entries.map(([_, value]) => value);
