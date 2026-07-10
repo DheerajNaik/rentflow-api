@@ -10,5 +10,6 @@ router.get('/active', tenancyRecordsController.getAllActiveTenancyRecords);
 router.get('/:id', tenancyRecordsController.getTenancyRecordById);
 router.put('/:id',validateUpdateTenancyRecord, tenancyRecordsController.updateTenancyRecordById );
 router.put('/:id/moveout',tenancyRecordsController.updateMoveoutDate);
+router.get('/:id/payments', tenancyRecordsController.getPaymentsByTenancyId)
 
 module.exports = router;

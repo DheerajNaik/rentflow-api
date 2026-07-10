@@ -8,5 +8,9 @@ const {validatePaymentsRecord,validateUpdatePaymentsRecord} = require('../middle
 
 router.post('/',validatePaymentsRecord, paymentsController.createPaymentDetails);
 router.put('/:id',validateUpdatePaymentsRecord, paymentsController.updatePaymentDetails);
+router.get('/', paymentsController.getAllPayments);
+router.get('/unpaid', paymentsController.getAllUnpaidPayments);
+router.delete('/:id', paymentsController.deletePayment);
+
 
 module.exports = router;

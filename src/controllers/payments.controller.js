@@ -34,4 +34,46 @@ const updatePaymentDetails = async(req, res)=>{
    }
 }
 
-module.exports = {createPaymentDetails,updatePaymentDetails}
+const getAllPayments = async (req, res)=>{
+    try {
+         const result =  await paymentRecordModel.getAllPayments();
+         if(result.length ===0 ){
+            return res.status(200).json({ success: false, message : "No Data found" })  
+         }
+         res.status(200).json({ success: true, data : result })
+    }
+    catch(error){
+    res.status(500).json({success:false, message : error.message})
+    }
+}
+
+const getAllUnpaidPayments = async (req,res)=>{
+      try {
+          const result = await paymentRecordModel.getAllUnpaidPayments();
+           if(result.length ===0 ){
+            return res.status(200).json({ success: false, message : "No Data found" })  
+         }
+         res.status(200).json({ success: true, data : result })
+
+      }
+      catch(error) {
+          res.status(500).json({success:false, message : error.message})
+      }
+}
+const deletePayment = async (req,res)=>{
+      try {
+        const id = req.params.id;
+        console.log(id)
+        const result = await paymentRecordModel.deletePayment(id);
+        console.log(result)
+        if(result.affectedRows ===0 ){
+            return res.status(200).json({success: false,message : "No data found"})
+        }
+         res.status(200).json({success: true, data : result})
+
+      }
+      catch(error) {
+          res.status(500).json({success:false, message : error.message})
+      }
+}
+module.exports = {createPaymentDetails,updatePaymentDetails, getAllPayments, getAllUnpaidPayments,deletePayment}

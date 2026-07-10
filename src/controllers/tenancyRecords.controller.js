@@ -1,4 +1,5 @@
 const tenancyRecordsModel = require('../models/tenancyRecords.model');
+const paymentsRecordModel = require('../models/payments.model');
 
 const createTenancyRecords = async (req, res) => {
     try {
@@ -90,4 +91,18 @@ const updateMoveoutDate = async (req, res) => {
     }
 
 }
-module.exports = { createTenancyRecords, getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById, updateTenancyRecordById, updateMoveoutDate } 
+
+const getPaymentsByTenancyId = async(req,res)=>{
+    try {
+        const id = req.params.id;
+        const result = await paymentsRecordModel.getPaymentsByTenancyId(id);
+        if(result.length ===0 ){
+            return res.status(404).json({ success: false, message: "No Data Found" })
+        }
+        res.status(200).json({success: true, data : result})
+    }
+    catch(error){
+        res.status(500).json({success: false, message : error.message})
+    }
+}
+module.exports = { createTenancyRecords, getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById, updateTenancyRecordById, updateMoveoutDate,getPaymentsByTenancyId } 

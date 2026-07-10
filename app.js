@@ -19,4 +19,5 @@ app.use('/tenant', tenantRoutes);
 app.use('/tenancyRecords', tenancyRecordRoutes);
 app.use('/payments', paymentsRoutes);
 
+
 module.exports = app
