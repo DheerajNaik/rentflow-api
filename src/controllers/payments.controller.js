@@ -3,7 +3,7 @@ const paymentRecordModel = require('../models/payments.model');
 
 const createPaymentDetails = async(req, res)=>{
    try {
-       const data = req.body
+        const data = req.body
         const { tenancy_record_id, amount_paid, payment_date, payment_for_month, payment_for_year, payment_mode, paid_to_account, balance, notes }= data;
         //remove all undefined items from object;
         const filteredFields = Object.fromEntries(Object.entries(data).filter(([k , v])=> v !== undefined ));

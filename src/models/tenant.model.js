@@ -42,7 +42,7 @@ const deleteTenantById = async (id)=>{
           } 
            if (item.is_active) {
             const [row] = await pool.execute(`UPDATE tenants SET is_active = 0, updated_at = NOW() WHERE id = ?`, [id]);
-            return [row]
+            return row
           } else {
             return "Already deleted"
           }

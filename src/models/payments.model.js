@@ -12,7 +12,7 @@ const createPaymentDetails = async(data)=>{
 }
 
 const updatePaymentDetails = async(id,data)=>{
-    const columnNames = Object.keys(data).join(", ")
+    
     const setClause = Object.keys(data).map((item)=>`${item} = ?`).join(", ")
     const values = Object.values(data)
     values.push(id);
@@ -94,21 +94,16 @@ const updatedList = result.map(tenant=>{
       return {
         ...tenant, dueMonths
       }
-}
-)
-return updatedList ;
-                          
+})
+return updatedList ;                   
 }
 
 const deletePayment = async (id)=>{
-         const [result] = await pool.execute(`DELETE FROM payments WHERE id = ?`,[id]);
-        
+         const [result] = await pool.execute(`DELETE FROM payments WHERE id = ?`,[id]);   
          return result;
 }
-const getPaymentsByTenancyId = async(id)=>{
-  
+const getPaymentsByTenancyId = async(id)=>{ 
         const [result] = await pool.execute(`SELECT * FROM payments WHERE id = ?`,[id]);
         return result;
-
 }
 module.exports = {createPaymentDetails, updatePaymentDetails, getAllPayments, getAllUnpaidPayments,deletePayment,getPaymentsByTenancyId}
