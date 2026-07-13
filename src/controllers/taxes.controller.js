@@ -1,23 +1,24 @@
-const expensesModel = require('../models/expenses.model');
+const taxModel = require('../models/taxes.model');
 
 
-const createExpense= async(req, res) => {
+
+const createTaxRecord= async(req, res) => {
 
     try {
         const data = req.body
-        const { building_id, house_id, amount_paid, expense_date, category, description } = req.body;
-        const filteredFields = Object.fromEntries(Object.entries({ building_id, house_id, amount_paid, expense_date, category, description }).filter(([k , v])=> v !== undefined ));
-        const result = await expensesModel.createExpense(filteredFields)
+        const { building_id, tax_amount_paid, tax_paid_date, tax_year, bbmp_tax_account_number, receipt_url,notes } = req.body;
+        const filteredFields = Object.fromEntries(Object.entries({ building_id, tax_amount_paid, tax_paid_date, tax_year, bbmp_tax_account_number, receipt_url,notes }).filter(([k , v])=> v !== undefined ));
+        const result = await taxModel.createTaxRecord(filteredFields)
         res.status(201).json({ success: true, data: result });        
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 }
 
-const getAllExpenses= async(req, res) => {
+const getAllTaxRecords= async(req, res) => {
 
     try {
-        const result = await expensesModel.getAllExpenses();
+        const result = await taxModel.getAllTaxRecords();
         res.status(200).json({ success: true, data: result })
     } catch (error) {
         res.status(500).json({ success: false, message: error.message })
@@ -25,14 +26,14 @@ const getAllExpenses= async(req, res) => {
 }
 
 
-const editExpenseById = async(req, res)=>{
+const updateTaxRecordById = async(req, res)=>{
     try
     {
          const id = req.params.id;
-         const {house_id, amount_paid, expense_date, category , description}= req.body;
-         const allowedFields = {house_id,amount_paid, expense_date, category , description}
+         const {tax_amount_paid, tax_paid_date, tax_year, bbmp_tax_account_number, receipt_url,notes}= req.body;
+         const allowedFields = { tax_amount_paid, tax_paid_date, tax_year, bbmp_tax_account_number, receipt_url,notes}
          const updatedItems =  Object.fromEntries(Object.entries(allowedFields).filter(([key,value])=>value !== undefined));
-         const result = await expensesModel.editExpenseById(id,updatedItems);
+         const result = await taxModel.updateTaxRecordById(id,updatedItems);
          if(result.affectedRows===0){
            return res.status(404).json({success:false, message: "No such data found"});
         }
@@ -43,15 +44,12 @@ const editExpenseById = async(req, res)=>{
         }
         
 }
-const deleteExpenseById = async(req, res)=> {
+const deleteTaxRecordById = async(req, res)=> {
          try {
                const id = req.params.id;
-               const result = await expensesModel.deleteExpenseById(id);     
+               const result = await taxModel.deleteTaxRecordById(id);     
                if (result === null) {
                   return res.status(404).json({ success: false, message: "Data not found" })
-               }
-               if (result === "Already deleted") {
-                  return res.status(400).json({ success: false, message: "invalid request: This is already deactivated" })
                }
                res.status(200).json({ success: true, data: result })
             }
@@ -62,4 +60,4 @@ const deleteExpenseById = async(req, res)=> {
 
 
 
-module.exports = { getAllExpenses, createExpense,editExpenseById,deleteExpenseById }
+module.exports = { getAllTaxRecords, createTaxRecord,updateTaxRecordById,deleteTaxRecordById }
