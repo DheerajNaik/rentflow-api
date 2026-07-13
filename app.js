@@ -6,10 +6,12 @@ const tenancyRecordRoutes = require('./src/routes/tenancyRecords.routes')
 const paymentsRoutes = require('./src/routes/payments.routes')
 const expensesRoutes = require('./src/routes/expenses.routes');
 const taxesRoutes = require('./src/routes/taxes.routes')
-const app = express()
+const app = express();
+const cors = require('cors')
 
 
 
+app.use(cors())
 app.use(express.json())
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' })
