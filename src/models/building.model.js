@@ -5,13 +5,13 @@ const { v4: uuidv4 } = require('uuid');
 
 const createBuilding = async (data) => {
   const id = uuidv4();
-  const { name, address, city, yearly_tax, cauvery_water_account_number, cauvery_water_bill_image } = data
-  const [result] = await pool.execute(
-    `INSERT INTO buildings (id, name, address, city, yearly_tax, cauvery_water_account_number, cauvery_water_bill_image) 
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [id, name, address, city, yearly_tax, cauvery_water_account_number, cauvery_water_bill_image]
-  )
-  return result
+     const dataWithId = {id,...data}
+     const entries = Object.entries(dataWithId);
+     const columns = entries.map(([key]) => key).join(', ');
+     const placeholders = entries.map(() => '?').join(', ');
+     const values = entries.map(([_, value]) => value);
+     const [result] = await pool.execute(`INSERT INTO buildings (${columns}) VALUES (${placeholders})`,values )
+     return result;
 }
 const getAllBuildings = async()=>{
         const [rows]=   await pool.execute(`SELECT * FROM buildings WHERE is_active = 1`);

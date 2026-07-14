@@ -19,10 +19,10 @@ app.get('/health', (req, res) => {
 
 app.use('/buildings', buildingRoutes);
 app.use('/buildings/:buildingId/houses' , houseRoutes);
-app.use('/tenant', tenantRoutes);
-app.use('/tenancyRecords', tenancyRecordRoutes);
+app.use('/tenants', tenantRoutes);
+app.use('/tenancy-records', tenancyRecordRoutes);
 app.use('/payments', paymentsRoutes);
 app.use('/expenses',expensesRoutes);
-app.use('/taxes',taxesRoutes);
+app.use('/tax',taxesRoutes);
 
 module.exports = app

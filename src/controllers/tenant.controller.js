@@ -3,11 +3,12 @@ const tenantModel = require('../models/tenant.model');
 const createTenant = async(req, res) => {
    try{
       const {name,phone_number,aadhar_number,emergency_contact_name,emergency_contact_number,notes}= req.body;
-      const result = await tenantModel.createTenant({name,phone_number,aadhar_number,emergency_contact_name,emergency_contact_number,notes}) 
-       res.status(201).json({success: true, data: result});
+      const filteredFields = Object.fromEntries(Object.entries({name,phone_number,aadhar_number,emergency_contact_name,emergency_contact_number,notes}).filter(([k , v])=> v !== undefined ));
+      const result = await tenantModel.createTenant(filteredFields) 
+      res.status(201).json({success: true, data: result});
 
    }catch(error){
-       res.status(500).json({success: false, message: error.message});
+      res.status(500).json({success: false, message: error.message});
    }
 }
 

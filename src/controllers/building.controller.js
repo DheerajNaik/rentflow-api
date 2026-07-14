@@ -5,7 +5,9 @@ const createBuilding = async (req, res) => {
 
     try {    
         const { name, address, city, yearly_tax, cauvery_water_account_number, cauvery_water_bill_image } = req.body
-        const building = await buildingModel.createBuilding({ name, address, city, yearly_tax, cauvery_water_account_number, cauvery_water_bill_image })
+        const filteredFields = Object.fromEntries(Object.entries({ name, address, city, yearly_tax, cauvery_water_account_number, cauvery_water_bill_image }).filter(([k , v])=> v !== undefined ));
+        
+        const building = await buildingModel.createBuilding(filteredFields)
         res.status(201).json({ success: true, data: building })
 
     }
@@ -16,8 +18,8 @@ const createBuilding = async (req, res) => {
 
 const getAllBuildings = async(req,res)=>{
      try {
-        const building = await buildingModel.getAllBuildings()
-        res.status(200).json({success: true, building})
+        const result = await buildingModel.getAllBuildings()
+        res.status(200).json({success: true, data:result})
      }
      catch(error){
          res.status(500).json({ success: false, message: error.message })

@@ -2,13 +2,15 @@ const Joi = require ('joi')
 
 
 const houseSchema = Joi.object({
-  house_name: Joi.string().min(3).max(255).required(),
+  building_id : Joi.string().required(),
+  house_name: Joi.string().required(),
   electricity_meter_account_number: Joi.string().optional().allow('', null),
   electricity_meter_rr_number: Joi.string().optional().allow('', null),
   rent_amount: Joi.number().min(0).required(),
 })
 
 const houseUpdateSchema = Joi.object({
+  building_id : Joi.string().optional(),
   house_name: Joi.string().min(3).max(255).optional(),
   electricity_meter_account_number: Joi.string().optional().allow('', null),
   electricity_meter_rr_number: Joi.string().optional().allow('', null),

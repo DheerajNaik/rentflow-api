@@ -27,14 +27,21 @@ const createTenancyRecord = async (record) => {
 }
 
 const getAllTenancyRecords = async () => {
-  const [results] = await pool.execute(`SELECT * FROM tenancy_records`);
+  const [results] = await pool.execute(`SELECT tr.id, b.name, h.house_name , t.name as Current_Tenant ,h.rent_amount as Current_Rent, tr.move_in_date, 
+                                     tr.move_out_date, tr.number_of_occupants,tr.minimum_stay_months,tr.agreement_done,
+                                     tr.agreement_expiry_date, tr.painting_charges,tr.notes, tr.agreement_file_url from 
+                                     tenancy_records tr JOIN tenants t ON tr.tenant_id = t.id JOIN houses h ON tr.house_id = h.id JOIN buildings b ON h.building_id = b.id`);
 
   return results;
 }
 
 const getAllActiveTenancyRecords = async () => {
-  const [results] = await pool.execute(`SELECT * FROM tenancy_records WHERE move_out_date is NULL`)
-  console.log(results)
+  const [results] = await pool.execute(`SELECT tr.id, b.name, h.house_name ,t.name as Current_Tenant ,h.rent_amount as Current_Rent, tr.move_in_date, 
+                                     tr.move_out_date, tr.number_of_occupants,tr.minimum_stay_months,tr.agreement_done,
+                                     tr.agreement_expiry_date, tr.painting_charges,tr.notes, tr.agreement_file_url from 
+                                     tenancy_records tr JOIN tenants t ON tr.tenant_id = t.id JOIN houses h ON tr.house_id = h.id JOIN buildings b ON h.building_id = b.id
+                                    WHERE tr.move_out_date IS NULL`)
+ 
   return results;
 }
 

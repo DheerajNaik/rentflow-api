@@ -10,15 +10,21 @@ const createHouse =async (data)=>{
         if(isExisting){
             return "House name already Exists"
         }
-        const result =  await pool.execute(`INSERT INTO houses (id, electricity_meter_account_number, electricity_meter_rr_number, rent_amount, building_id, house_name  ) 
-                          VALUES (?, ?, ?, ?, ?, ?)`,
-                        [id, electricity_meter_account_number, electricity_meter_rr_number, rent_amount, building_id, house_name ]);
-        return result
+        
+     const dataWithId = {id,...data}
+     
+     const entries = Object.entries(dataWithId);
+     const columns = entries.map(([key]) => key).join(', ');
+     const placeholders = entries.map(() => '?').join(', ');
+     const values = entries.map(([_, value]) => value);
+     const [result] = await pool.execute(`INSERT INTO houses (${columns}) VALUES (${placeholders})`,values )
+     return result;
+       
      
 }
 
 const getAllHousesByBuilding = async (id)=> {
-       const [list]=   await pool.execute(`SELECT * FROM houses WHERE building_id = ?`,[id]);
+       const [list]=   await pool.execute(`SELECT * FROM houses WHERE building_id = ? AND is_active = 1`,[id]);
        return list;
 }
 
@@ -43,6 +49,7 @@ const updateHouseById = async(building_id, id , updatedValues) =>{
     
     const [result] = await pool.execute(
         `UPDATE houses SET ${setClause}, updated_at = NOW() WHERE id = ? AND building_id = ? AND is_active = 1`, values)
+        
     return result;
 
 }

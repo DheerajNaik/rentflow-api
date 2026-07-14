@@ -2,8 +2,9 @@ const Joi = require('joi')
 
 
 const buildingSchema = Joi.object({
-  name: Joi.string().min(3).max(255).required(),
-  address: Joi.string().min(5).max(500).required(),
+  
+  name: Joi.string().required(),
+  address: Joi.string().required(),
   city: Joi.string().min(2).max(100).required(),
   yearly_tax: Joi.number().min(0).required(),
   cauvery_water_account_number: Joi.string().optional().allow('', null),
