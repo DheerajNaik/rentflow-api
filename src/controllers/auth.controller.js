@@ -22,7 +22,7 @@ const loginUser = async (req, res)=>{
              return res.status(401).json({ success: false, result: "Unauthorized" });
             }
             else{
-            const accessToken = jwt.sign({ id },process.env.TOKEN_SECRET,{ expiresIn: '2m' });
+            const accessToken = jwt.sign({ id },process.env.TOKEN_SECRET,{ expiresIn: '15m' });
             res.status(200).json({ success: true, data: {token : accessToken} , message : "User Logged-In"});
             }
         }

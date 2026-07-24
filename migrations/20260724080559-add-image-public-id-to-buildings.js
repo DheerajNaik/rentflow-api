@@ -15,25 +15,19 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.addColumn('buildings', 'cauvery_water_account_number', {
+   return db.addColumn('buildings', 'cauvery_water_bill_image_cloudinary_public_id', {
     type: 'string',
     length: 100,
     notNull: false
-  }).then(()=>{
-   return db.addColumn('buildings', 'cauvery_water_bill_image', {
-    type: 'string',
-    length: 200,
-    notNull: false
-  })
   })
 };
 
 exports.down = function(db) {
-  return db.removeColumn('buildings', 'cauvery_water_account_number')
-    .then(() => {
-      return db.removeColumn('buildings', 'cauvery_water_bill_image')
-    })
-}
+  return db.deleteColumn('buildings', 'cauvery_water_bill_image_cloudinary_public_id', {
+    type: 'string',
+    length: 100,
+    notNull: false
+  })};
 
 exports._meta = {
   "version": 1

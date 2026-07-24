@@ -20,10 +20,18 @@ const validateToken = (req, res, next) => {
     try {
         const token = req.headers.authorization;
         if (!token) return res.status(401).json({ success: false, message: "no token provided" })
+            
 
         const tokenArray = token.split(' ');
 
         const verifyToken = jwt.verify(tokenArray[1], process.env.TOKEN_SECRET);
+        const expiryTime = verifyToken.exp;
+        const bufferTimeInSeconds = 60;
+        const currentTimeInSeconds = Math.floor(Date.now()/1000);
+        const warnToLoginAgain = currentTimeInSeconds>= expiryTime-bufferTimeInSeconds;
+        if(warnToLoginAgain){
+            console.log("You will be logged out in a minute, relogin again after that")
+        }
         req.admin = verifyToken;
         next();
     } catch (error) {

@@ -60,4 +60,15 @@ const restoreBuildingById = async (id) => {
 
           }
 }
-module.exports = { createBuilding,getAllBuildings,getBuildingById, updateBuildingById, deleteBuildingById, restoreBuildingById}
+
+const uploadCaveryBill = async(url,public_id,id)=>{
+  const [result] =  await pool.execute( `UPDATE buildings SET cauvery_water_bill_image = ? , cauvery_water_bill_image_cloudinary_public_id = ?, updated_at = NOW() WHERE id = ? AND is_active = 1`, [url,public_id,id])
+        
+         return result;
+}
+const deleteCaveryBill = async(id)=>{
+  const [result] =  await pool.execute( `UPDATE buildings SET cauvery_water_bill_image_cloudinary_public_id = NULL, cauvery_water_bill_image = NULL, updated_at = NOW() WHERE id = ?`, [id])
+
+        return result;
+}
+module.exports = { createBuilding,getAllBuildings,getBuildingById, updateBuildingById, deleteBuildingById, restoreBuildingById,uploadCaveryBill,deleteCaveryBill}
