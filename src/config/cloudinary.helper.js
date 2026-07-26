@@ -6,7 +6,8 @@ const cloudinary = require('../config/cloudinary')
       {
         folder: "rentflow/buildings",
         public_id: `building_${id}_cauvery_bill`,
-        overwrite: true
+        overwrite: true,
+        resource_type: "auto"
       },
       (error, result) => {
         if (error) return reject(error);

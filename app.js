@@ -20,9 +20,9 @@ app.get('/health', (req, res) => {
 })
 
 
-//app.use('/auth',authRoutes);
-app.use('/buildings',  buildingRoutes);
-app.use('/buildings/:buildingId/houses' ,validateToken, houseRoutes);
+app.use('/auth',authRoutes);
+app.use('/buildings', validateToken, buildingRoutes);
+app.use('/buildings/:buildingId/houses',validateToken,houseRoutes);
 app.use('/tenants', validateToken,tenantRoutes);
 app.use('/tenancy-records',validateToken, tenancyRecordRoutes);
 app.use('/payments',validateToken, paymentsRoutes);

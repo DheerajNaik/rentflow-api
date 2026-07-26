@@ -97,15 +97,15 @@ const restoreBuildingById = async (req, res) => {
 
 const uploadCaveryBill= async(req, res)=>{
     try{
-      const buffer = req.file.buffer
       if(!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' })
+
+      const buffer = req.file.buffer
       const image = req.file;
       const buildingId = req.params.id;
       const data = await uploadToCloudinary(buffer,buildingId);
       const url = data.secure_url;
       const public_id = data.public_id;
       const result = await buildingModel.uploadCaveryBill(url,public_id,buildingId);
-    //  console.log(result)
       res.status(200).json({success: true, data : result})
       
 }catch(error){
@@ -125,7 +125,7 @@ const deleteCaveryBill = async (req,res)=>{
         if(result.result === 'ok'){
            const deleteFromDb = await buildingModel.deleteCaveryBill(id);
            
-           res.status(200).json({success:true, message : "Image_deleted"})
+           res.status(200).json({success:true, data : "Image_deleted"})
         }else{
            res.status(404).json({success:false,message : "Data not Found"})
         }

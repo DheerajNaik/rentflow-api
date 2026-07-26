@@ -1,5 +1,7 @@
 const tenancyRecordsModel = require('../models/tenancyRecords.model');
 const paymentsRecordModel = require('../models/payments.model');
+const {uploadToCloudinary} = require('../config/cloudinary.helper');
+const cloudinary = require('../config/cloudinary');
 
 const createTenancyRecords = async (req, res) => {
     try {
@@ -105,4 +107,43 @@ const getPaymentsByTenancyId = async(req,res)=>{
         res.status(500).json({success: false, message : error.message})
     }
 }
-module.exports = { createTenancyRecords, getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById, updateTenancyRecordById, updateMoveoutDate,getPaymentsByTenancyId } 
+const uploadAgreement= async(req, res)=>{
+    try{
+      if(!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' })
+      const buffer = req.file.buffer
+      const image = req.file;
+      const id = req.params.id;
+      const data = await uploadToCloudinary(buffer,id);
+      const url = data.secure_url;
+      const public_id = data.public_id;
+      const result = await tenancyRecordsModel.uploadAgreement(url,public_id,id);
+      res.status(200).json({success: true, data : result})
+      
+}catch(error){
+    res.status(500).json({success: false, message : error.message})
+}  
+}
+const deleteAgreement = async (req,res)=>{
+    try
+    {
+        const id = req.params.id;
+        const {agreement_file_url,agreement_image_cloudinary_public_id} = await tenancyRecordsModel.getTenancyRecordById(id);
+        if (!agreement_image_cloudinary_public_id) {
+           return res.status(400).json({ success: false, message: 'No image to delete' })
+             }
+        const result = await cloudinary.uploader.destroy(agreement_image_cloudinary_public_id);
+        
+        if(result.result === 'ok'){
+           const deleteFromDb = await tenancyRecordsModel.deleteAgreement(id);
+           
+           res.status(200).json({success:true, message : "Image_deleted"})
+        }else{
+           res.status(404).json({success:false,message : "Data not Found"})
+        }
+       
+    }catch(error){
+    res.status(500).json({success: false, message : error.message})
+     
+    }
+}
+module.exports = { createTenancyRecords, getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById, updateTenancyRecordById, updateMoveoutDate,getPaymentsByTenancyId,uploadAgreement,deleteAgreement } 

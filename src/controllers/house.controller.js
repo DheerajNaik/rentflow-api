@@ -1,4 +1,6 @@
 const houseModel = require('../models/house.model')
+const {uploadToCloudinary} = require('../config/cloudinary.helper');
+const cloudinary = require('../config/cloudinary')
 
 const createHouse = async (req, res)=>{
 
@@ -113,4 +115,48 @@ const restoreHouseById = async(req, res)=>{
          res.status(500).json({success:false , message : error.message})
      }
 }
-module.exports = {createHouse, getAllHousesByBuilding, getHouseById, updateHouseById, deleteHouseById, restoreHouseById}
+
+const uploadElectricityBill = async(req, res)=>{
+     try{  
+        if(!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' })
+        const buffer = req.file.buffer
+        const image = req.file;
+        const houseId = req.params.id;
+        const data = await uploadToCloudinary(buffer,houseId);  
+        const url = data.secure_url;
+        const public_id = data.public_id;
+        const result = await houseModel.uploadElectricityBill(url,public_id,houseId);
+        res.status(200).json({success: true, data : result})
+     }
+     catch(error){
+        res.status(500).json({success: false, message : error.message})
+     }
+}
+
+const deleteElectricityBill = async(req,res)=>{
+   try
+       { 
+           const id = req.params.id;
+           const building_id = req.params.buildingId;
+           const {electricity_bill_image,electricity_bill_image_cloudinary_public_id} = await houseModel.getHouseById(building_id,id);
+           
+           if (!electricity_bill_image_cloudinary_public_id) {
+              return res.status(400).json({ success: false, message: 'No image to delete' })
+              }
+           const result = await cloudinary.uploader.destroy(electricity_bill_image_cloudinary_public_id);
+           
+           if(result.result === 'ok'){
+              const deleteFromDb = await houseModel.deleteElectricityBill(id);
+              
+              res.status(200).json({success:true, message : "Image_deleted"})
+           }else{
+              res.status(404).json({success:false,message : "Data not Found"})
+           }
+          
+       }catch(error){
+       res.status(500).json({success: false, message : error.message})
+        
+       }
+}
+module.exports = {createHouse, getAllHousesByBuilding, getHouseById, updateHouseById, deleteHouseById, restoreHouseById,uploadElectricityBill, deleteElectricityBill}
+

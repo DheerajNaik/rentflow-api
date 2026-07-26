@@ -40,7 +40,20 @@ const deleteTaxRecordById = async(id)=>{
             return item;
           }
 }
+const getTaxById = async(id)=>{
+       const [row] = await pool.execute( `SELECT * FROM tax WHERE id = ? `, [id]);
+       return row[0];
+}
 
+const uploadTaxReceipt = async(url,public_id,id)=>{
+  const [result] =  await pool.execute( `UPDATE tax SET receipt_url = ? , tax_image_cloudinary_public_id = ?, updated_at = NOW() WHERE id = ?`, [url,public_id,id])
+        
+         return result;
+}
+const deleteTaxReceipt = async(id)=>{
+  const [result] =  await pool.execute( `UPDATE tax SET tax_image_cloudinary_public_id = NULL, receipt_url = NULL, updated_at = NOW() WHERE id = ?`, [id])
 
+        return result;
+}
 
-module.exports = {createTaxRecord,getAllTaxRecords,updateTaxRecordById, deleteTaxRecordById}
+module.exports = {createTaxRecord,getAllTaxRecords,updateTaxRecordById, deleteTaxRecordById,getTaxById,deleteTaxReceipt,uploadTaxReceipt}

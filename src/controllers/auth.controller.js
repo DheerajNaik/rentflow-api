@@ -8,7 +8,6 @@ const loginUser = async (req, res)=>{
         const username = req.body.username;
         const password = req.body.password;
         const result = await authModel.loginUser(username,password);
-
         if (result.length === 0) {
             return res.status(401).json({ success: false, message: "Unauthorized" })
         }

@@ -81,5 +81,15 @@ const updateMoveoutDate = async (id, date) => {
   const [result] = await pool.execute(`UPDATE tenancy_records SET move_out_date = ?,updated_at = NOW() WHERE id = ?`, [date, id]);
   return result;
 }
+const uploadAgreement = async(url,public_id,id)=>{
+  const [result] =  await pool.execute( `UPDATE tenancy_records SET agreement_file_url = ? , agreement_image_cloudinary_public_id = ?, updated_at = NOW() WHERE id = ?`, [url,public_id,id])
+        
+         return result;
+}
+const deleteAgreement = async(id)=>{
+  const [result] =  await pool.execute( `UPDATE tenancy_records SET agreement_image_cloudinary_public_id = NULL, agreement_file_url = NULL, updated_at = NOW() WHERE id = ?`, [id])
 
-module.exports = { createTenancyRecord, getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById, updateTenancyRecordById, updateMoveoutDate }
+        return result;
+}
+
+module.exports = { createTenancyRecord, getAllTenancyRecords, getAllActiveTenancyRecords, getTenancyRecordById, updateTenancyRecordById, updateMoveoutDate ,uploadAgreement,deleteAgreement}

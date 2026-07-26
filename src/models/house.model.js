@@ -80,4 +80,15 @@ const restoreHouseById = async(building_id , id)=>{
          return item;
     }
 
-module.exports = {createHouse,getAllHousesByBuilding, getHouseById, updateHouseById, deleteHouseById, restoreHouseById }
+
+    const uploadElectricityBill = async(url,public_id,id)=>{
+    const [result] =  await pool.execute( `UPDATE houses SET electricity_bill_image = ? , electricity_bill_image_cloudinary_public_id = ?, updated_at = NOW() WHERE id = ? AND is_active = 1`, [url,public_id,id])
+    return result;
+}
+
+    const deleteElectricityBill = async(id)=>{
+    const [result] =  await pool.execute( `UPDATE houses SET electricity_bill_image_cloudinary_public_id = NULL, electricity_bill_image = NULL, updated_at = NOW() WHERE id = ?`, [id])
+    return result;
+}
+
+module.exports = {createHouse,getAllHousesByBuilding, getHouseById, updateHouseById, deleteHouseById, restoreHouseById ,uploadElectricityBill,deleteElectricityBill}

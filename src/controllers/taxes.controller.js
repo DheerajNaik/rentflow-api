@@ -1,5 +1,6 @@
 const taxModel = require('../models/taxes.model');
-
+const {uploadToCloudinary} = require('../config/cloudinary.helper')
+const cloudinary = require('../config/cloudinary')
 
 
 const createTaxRecord= async(req, res) => {
@@ -58,6 +59,44 @@ const deleteTaxRecordById = async(req, res)=> {
             }
 }
 
+const uploadTaxReceipt= async(req, res)=>{
+    try{
+      if(!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' })
+      const buffer = req.file.buffer
+      const image = req.file;
+      const id = req.params.id;
+      const data = await uploadToCloudinary(buffer,id);
+      const url = data.secure_url;
+      const public_id = data.public_id;
+      const result = await taxModel.uploadTaxReceipt(url,public_id,id);
+      res.status(200).json({success: true, data : result})
+      
+}catch(error){
+    res.status(500).json({success: false, message : error.message})
+}  
+}
+const deleteTaxReceipt = async (req,res)=>{
+    try
+    {
+        const id = req.params.id;
+        const {receipt_url,tax_image_cloudinary_public_id} = await taxModel.getTaxById(id);
+        if (!tax_image_cloudinary_public_id) {
+           return res.status(400).json({ success: false, message: 'No image to delete' })
+             }
+        const result = await cloudinary.uploader.destroy(tax_image_cloudinary_public_id);
+        
+        if(result.result === 'ok'){
+           const deleteFromDb = await taxModel.deleteTaxReceipt(id);
+           
+           res.status(200).json({success:true, message : "Image_deleted"})
+        }else{
+           res.status(404).json({success:false,message : "Data not Found"})
+        }
+       
+    }catch(error){
+    res.status(500).json({success: false, message : error.message})
+     
+    }
+}
 
-
-module.exports = { getAllTaxRecords, createTaxRecord,updateTaxRecordById,deleteTaxRecordById }
+module.exports = { getAllTaxRecords, createTaxRecord,updateTaxRecordById,deleteTaxRecordById,uploadTaxReceipt,deleteTaxReceipt }
