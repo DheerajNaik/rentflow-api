@@ -14,7 +14,10 @@ const createTenant = async(data)=>{
 }
 
 const getAllTenants = async()=>{
-     const [result] = await pool.execute(`SELECT * FROM tenants WHERE is_active = 1`);
+     const [result]= await pool.execute(`SELECT t.* , b.name AS Building_Name FROM tenants t 
+          LEFT JOIN tenancy_records tr ON t.id = tr.tenant_id LEFT JOIN houses h ON tr.house_id = h.id LEFT JOIN
+          buildings b ON b.id = h.building_id WHERE t.is_active = 1 ORDER BY b.name ASC , t.name ASC`)
+          
      return result;
 }
 
