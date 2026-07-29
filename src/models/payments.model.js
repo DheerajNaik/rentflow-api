@@ -41,62 +41,69 @@ const getAllUnpaidPayments = async () => {
                         GROUP BY tr.id,t.name, b.name, h.house_name, tr.move_in_date`);
 
   const current = new Date();
+  // console.log(result)
+  //console.log(current)
   const currentMonth = current.getMonth() + 1;
   const currentYear = current.getFullYear();
   const currentDate = current.getDate();
   const currentYearAndMonth = currentYear * 12 + currentMonth
+  // console.log(currentYearAndMonth)
 
 
 
   const updatedList = result.map(tenant => {
     const dateStr = tenant.move_in_date;
+
     const dateObj = new Date(dateStr);
-    const year = dateObj.getFullYear();
-    const month = dateObj.getMonth();
+
+    const year = dateObj.getFullYear(); // Returns 2026
+    const month = dateObj.getMonth() + 1; // Returns 1 (January)
 
     const dueMonths = [];
-    // Handle last_paid_month === null
+    // Handle last_paid_month === null when tenant has never paid rent
     if (tenant.last_paid_month === null) {
-      tenant.last_paid_month = year * 12 + month;
+
+      let monthvar = month - 1;
+
+      let monthTenantEntered = year * 12 + month - 1;
+
+
+      tenant.last_paid_month = monthTenantEntered
+
     }
-    // Handle December edge case
-    let getMonth = tenant.last_paid_month % 12;
-    if (getMonth === 0) getMonth = 12;
-    const getYear = Math.floor(tenant.last_paid_month / 12);
-    // last month due and current monnth date is not yet 15th
-    // if (tenant.last_paid_month === currentYearAndMonth - 1 && currentDate <= 15) {
-    //   dueMonths.push({
-    //     month: getMonth, year: getYear, status: "grace"
-    //   })
-    // }
-    // // last month due and current monnth date is more than 15th
-    // else if (tenant.last_paid_month === currentYearAndMonth - 1 && currentDate > 15) {
-    //   dueMonths.push({
-    //     month: getMonth, year: getYear, status: "Overdue"
-    //   })
-    // }
-  // not paid before last month  
-     if (tenant.last_paid_month < currentYearAndMonth - 1) {
-      for (let i = tenant.last_paid_month + 1; i <= currentYearAndMonth; i++) {
+
+
+
+
+    if (tenant.last_paid_month < currentYearAndMonth - 1) {
+      // last paid jan . current is mar;
+      // due is feb 
+      // i = feb;
+
+
+      for (let i = tenant.last_paid_month + 1; i < currentYearAndMonth; i++) {
+
         let getMonth = i % 12;
-        if (getMonth === 0) getMonth = 12; // Handle December edge case
-        const getYear = Math.floor(i / 12);
+
+        let getYear = Math.floor(i / 12);
+
+        if (getMonth === 0) {
+          getMonth = 12; // Handle December edge case
+          getYear = year
+        }
+
         if (i === currentYearAndMonth - 1 && currentDate > 15) {
           dueMonths.push({
             month: getMonth, year: getYear, status: "Overdue"
           })
         }
-        if (i === currentYearAndMonth ) {
-          dueMonths.push({
-            month: getMonth, year: getYear, status: "grace"
-          })
-        }
+
         else if (i === currentYearAndMonth - 1 && currentDate <= 15) {
           dueMonths.push({
             month: getMonth, year: getYear, status: "grace"
           })
         }
-       
+
         else {
           dueMonths.push({
             month: getMonth, year: getYear, status: "Overdue"
@@ -104,7 +111,7 @@ const getAllUnpaidPayments = async () => {
         }
       }
     }
-    
+
 
     return {
       ...tenant, dueMonths
